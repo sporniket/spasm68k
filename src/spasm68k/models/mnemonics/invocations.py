@@ -1,0 +1,57 @@
+"""
+---
+(c) 2025 David SPORN
+---
+This is part of SPASM68K -- Sporniket's toolbox for assembly language targeting 
+the MC68000 instruction set architecture.
+
+SPASM68K is free software: you can redistribute it and/or
+modify it under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your option)
+any later version.
+
+SPASM68K is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE.
+
+See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with SPASM.
+If not, see <https://www.gnu.org/licenses/>. 
+---
+"""
+
+from dataclasses import dataclass
+
+
+@dataclass
+class Invocation:
+    name: str
+
+    @property
+    def mnemonicField(self) -> str:
+        return self.name
+
+
+@dataclass
+class InvocationWithSuffix(Invocation):
+    name: str
+    suffix: str
+
+    @property
+    def mnemonicField(self) -> str:
+        return f"{self.name}.{self.suffix}" if self.suffix else self.name
+
+
+@dataclass
+class DirectiveInvocation(InvocationWithSuffix):
+    pass
+
+
+@dataclass
+class InstructionInvocation(InvocationWithSuffix):
+    pass
+
+
+@dataclass
+class MacroInvocation(Invocation):
+    pass
