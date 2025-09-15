@@ -40,3 +40,12 @@ def test_that__MnemonicParser_parse__recognizes_directives_without_suffixes():
     assert mnemonic.name == "albus"
     assert mnemonic.suffix == ""
     assert mnemonic.mnemonicField == "albus"
+
+
+def test_that__MnemonicParser_parse__recognizes_directives_case_insensitive():
+    mnemonic = MnemonicParser().parse("aLbUs.DuMbLeDoR")
+
+    assert type(mnemonic) is DirectiveInvocation
+    assert mnemonic.name == "albus"
+    assert mnemonic.suffix == "dumbledor"
+    assert mnemonic.mnemonicField == "albus.dumbledor"

@@ -26,7 +26,7 @@ from spasm68k.models.mnemonics import DirectiveInvocation
 class MnemonicParser:
 
     def parse(self, mnemonicField: str):
-        parts = mnemonicField.split(".", 1)
+        parts = mnemonicField.lower().split(".", 1)
         if len(parts) < 2:
             parts += [""]
         return DirectiveInvocation(*parts)
