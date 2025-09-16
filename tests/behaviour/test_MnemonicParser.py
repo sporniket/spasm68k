@@ -152,3 +152,35 @@ def test_that__MnemonicParser_parse__MAY_recognize_nothing():
     assert type(mnemonic) is UnknownInvocation
     assert mnemonic.name == "callMeToTheMoon"
     assert mnemonic.mnemonicField == "callMeToTheMoon"
+
+
+def test_that__MnemonicParser_parse__WONT_override_directive():
+    # prepare
+    registry = RegistryOfMacros()
+    configuration = MnemonicParserConfiguration(["me"], ["me"], registry)
+    parser = MnemonicParser(configuration)
+
+    # -- ...later
+    registry.register("me")
+
+    # execute
+    mnemonic = parser.parse("me")
+
+    # verify
+    assert type(mnemonic) is DirectiveInvocation
+
+
+def test_that__MnemonicParser_parse__WONT_override_instruction_with_registered_macro():
+    # prepare
+    registry = RegistryOfMacros()
+    configuration = MnemonicParserConfiguration(["you"], ["me"], registry)
+    parser = MnemonicParser(configuration)
+
+    # -- ...later
+    registry.register("me")
+
+    # execute
+    mnemonic = parser.parse("me")
+
+    # verify
+    assert type(mnemonic) is InstructionInvocation
