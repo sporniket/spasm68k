@@ -21,12 +21,25 @@ If not, see <https://www.gnu.org/licenses/>. 
 """
 
 from dataclasses import dataclass
-from spasm68k.models.mnemonics import DirectiveInvocation, InstructionInvocation
+from spasm68k.models.mnemonics import (
+    DirectiveInvocation,
+    InstructionInvocation,
+    MacroInvocation,
+    UnknownInvocation,
+)
 
 
 class RegistryOfMacros:
+    def __init__(self):
+        self._registered = []
+
+    def register(self, name: str):
+        if name not in self._registered:
+            self._registered.append(name)
+        pass
+
     def isRegistered(self, name: str) -> bool:
-        return False
+        return name in self._registered
 
 
 @dataclass
@@ -50,9 +63,18 @@ class MnemonicParser:
             parts += [""]
         if self.isDirective(parts):
             return DirectiveInvocation(*parts)
-        elif parts[0] in self._configuration.instructions:
+        elif self.isInstruction(parts):
             return InstructionInvocation(*parts)
-        return None
+        elif self.isRegisteredMacro(mnemonicField):
+            return MacroInvocation(mnemonicField)
+        else:
+            return UnknownInvocation(mnemonicField)
+
+    def isRegisteredMacro(self, mnemonicField):
+        return self._configuration.macroRegistry.isRegistered(mnemonicField)
+
+    def isInstruction(self, parts):
+        return parts[0] in self._configuration.instructions
 
     def isDirective(self, parts):
         return parts[0] in self._configuration.directives

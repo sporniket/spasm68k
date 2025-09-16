@@ -25,17 +25,26 @@ from spasm68k.parsers import (
     MnemonicParserConfiguration,
     RegistryOfMacros,
 )
-from spasm68k.models.mnemonics import DirectiveInvocation, InstructionInvocation
+from spasm68k.models.mnemonics import (
+    DirectiveInvocation,
+    InstructionInvocation,
+    MacroInvocation,
+    UnknownInvocation,
+)
 
 DIRECTIVES = ["albus", "severus"]
 INSTRUCTIONS = ["harry", "hermione", "ron"]
 
 
-def makeConfiguration():
-    return MnemonicParserConfiguration(DIRECTIVES, INSTRUCTIONS, RegistryOfMacros())
+def makeConfiguration(registry: RegistryOfMacros = None):
+    return MnemonicParserConfiguration(
+        DIRECTIVES,
+        INSTRUCTIONS,
+        registry if registry is not None else RegistryOfMacros(),
+    )
 
 
-def test_that__MnemonicParser_parse__recognizes_directives():
+def test_that__MnemonicParser_parse__WILL_recognize_directives():
     # prepare and execute
     mnemonic = MnemonicParser(makeConfiguration()).parse("albus.dumbledor")
 
@@ -46,7 +55,7 @@ def test_that__MnemonicParser_parse__recognizes_directives():
     assert mnemonic.mnemonicField == "albus.dumbledor"
 
 
-def test_that__MnemonicParser_parse__recognizes_directives_without_suffixes():
+def test_that__MnemonicParser_parse__WILL_recognize_directives_without_suffixes():
     # prepare and execute
     mnemonic = MnemonicParser(makeConfiguration()).parse("albus")
 
@@ -57,7 +66,7 @@ def test_that__MnemonicParser_parse__recognizes_directives_without_suffixes():
     assert mnemonic.mnemonicField == "albus"
 
 
-def test_that__MnemonicParser_parse__recognizes_directives_case_insensitive():
+def test_that__MnemonicParser_parse__WILL_recognize_directives_case_insensitive():
     # prepare and execute
     mnemonic = MnemonicParser(makeConfiguration()).parse("aLbUs.DuMbLeDoR")
 
@@ -68,7 +77,7 @@ def test_that__MnemonicParser_parse__recognizes_directives_case_insensitive():
     assert mnemonic.mnemonicField == "albus.dumbledor"
 
 
-def test_that__MnemonicParser_parse__recognizes_instructions():
+def test_that__MnemonicParser_parse__WILL_recognize_instructions():
     # prepare and execute
     mnemonic = MnemonicParser(makeConfiguration()).parse("harry.potter")
 
@@ -79,7 +88,7 @@ def test_that__MnemonicParser_parse__recognizes_instructions():
     assert mnemonic.mnemonicField == "harry.potter"
 
 
-def test_that__MnemonicParser_parse__recognizes_instructions_without_suffixes():
+def test_that__MnemonicParser_parse__WILL_recognize_instructions_without_suffixes():
     # prepare and execute
     mnemonic = MnemonicParser(makeConfiguration()).parse("harry")
 
@@ -90,7 +99,7 @@ def test_that__MnemonicParser_parse__recognizes_instructions_without_suffixes():
     assert mnemonic.mnemonicField == "harry"
 
 
-def test_that__MnemonicParser_parse__recognizes_instructions_case_insensitive():
+def test_that__MnemonicParser_parse__WILL_recognize_instructions_case_insensitive():
     # prepare and execute
     mnemonic = MnemonicParser(makeConfiguration()).parse("HarrY.PotteR")
 
@@ -99,3 +108,47 @@ def test_that__MnemonicParser_parse__recognizes_instructions_case_insensitive():
     assert mnemonic.name == "harry"
     assert mnemonic.suffix == "potter"
     assert mnemonic.mnemonicField == "harry.potter"
+
+
+def test_that__MnemonicParser_parse__WILL_recognize_registered_macros():
+    # prepare
+    registry = RegistryOfMacros()
+    parser = MnemonicParser(makeConfiguration(registry))
+
+    # -- ...supposedly later
+    registry.register("callMeToTheMoon")
+
+    # execute
+    mnemonic = parser.parse("callMeToTheMoon")
+
+    # verify
+    assert type(mnemonic) is MacroInvocation
+    assert mnemonic.name == "callMeToTheMoon"
+    assert mnemonic.mnemonicField == "callMeToTheMoon"
+
+
+def test_that__MnemonicParser_parse__WILL_recognize_registered_macros_case_sensitive():
+    # prepare
+    registry = RegistryOfMacros()
+    parser = MnemonicParser(makeConfiguration(registry))
+
+    # -- ...supposedly later
+    registry.register("callMeToTheMoon")
+
+    # execute
+    mnemonic = parser.parse("CallMeToTheMoon")
+
+    # verify
+    assert type(mnemonic) is UnknownInvocation
+    assert mnemonic.name == "CallMeToTheMoon"
+    assert mnemonic.mnemonicField == "CallMeToTheMoon"
+
+
+def test_that__MnemonicParser_parse__MAY_recognize_nothing():
+    # prepare and execute
+    mnemonic = MnemonicParser(makeConfiguration()).parse("callMeToTheMoon")
+
+    # verify
+    assert type(mnemonic) is UnknownInvocation
+    assert mnemonic.name == "callMeToTheMoon"
+    assert mnemonic.mnemonicField == "callMeToTheMoon"

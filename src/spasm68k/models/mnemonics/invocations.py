@@ -55,3 +55,8 @@ class InstructionInvocation(InvocationWithSuffix):
 @dataclass
 class MacroInvocation(Invocation):
     pass
+
+
+@dataclass
+class UnknownInvocation(Invocation):
+    pass

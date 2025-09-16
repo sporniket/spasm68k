@@ -20,6 +20,16 @@ If not, see <https://www.gnu.org/licenses/>. 
 ---
 """
 
-from .invocations import DirectiveInvocation, InstructionInvocation
+from .invocations import (
+    DirectiveInvocation,
+    InstructionInvocation,
+    MacroInvocation,
+    UnknownInvocation,
+)
 
-__all__ = ["DirectiveInvocation", "InstructionInvocation"]
+__all__ = [
+    "DirectiveInvocation",
+    "InstructionInvocation",
+    "MacroInvocation",
+    "UnknownInvocation",
+]
