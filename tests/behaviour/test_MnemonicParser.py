@@ -20,13 +20,26 @@ If not, see <https://www.gnu.org/licenses/>. 
 ---
 """
 
-from spasm68k.parsers import MnemonicParser
-from spasm68k.models.mnemonics import DirectiveInvocation
+from spasm68k.parsers import (
+    MnemonicParser,
+    MnemonicParserConfiguration,
+    RegistryOfMacros,
+)
+from spasm68k.models.mnemonics import DirectiveInvocation, InstructionInvocation
+
+DIRECTIVES = ["albus", "severus"]
+INSTRUCTIONS = ["harry", "hermione", "ron"]
+
+
+def makeConfiguration():
+    return MnemonicParserConfiguration(DIRECTIVES, INSTRUCTIONS, RegistryOfMacros())
 
 
 def test_that__MnemonicParser_parse__recognizes_directives():
-    mnemonic = MnemonicParser().parse("albus.dumbledor")
+    # prepare and execute
+    mnemonic = MnemonicParser(makeConfiguration()).parse("albus.dumbledor")
 
+    # verify
     assert type(mnemonic) is DirectiveInvocation
     assert mnemonic.name == "albus"
     assert mnemonic.suffix == "dumbledor"
@@ -34,8 +47,10 @@ def test_that__MnemonicParser_parse__recognizes_directives():
 
 
 def test_that__MnemonicParser_parse__recognizes_directives_without_suffixes():
-    mnemonic = MnemonicParser().parse("albus")
+    # prepare and execute
+    mnemonic = MnemonicParser(makeConfiguration()).parse("albus")
 
+    # verify
     assert type(mnemonic) is DirectiveInvocation
     assert mnemonic.name == "albus"
     assert mnemonic.suffix == ""
@@ -43,9 +58,44 @@ def test_that__MnemonicParser_parse__recognizes_directives_without_suffixes():
 
 
 def test_that__MnemonicParser_parse__recognizes_directives_case_insensitive():
-    mnemonic = MnemonicParser().parse("aLbUs.DuMbLeDoR")
+    # prepare and execute
+    mnemonic = MnemonicParser(makeConfiguration()).parse("aLbUs.DuMbLeDoR")
 
+    # verify
     assert type(mnemonic) is DirectiveInvocation
     assert mnemonic.name == "albus"
     assert mnemonic.suffix == "dumbledor"
     assert mnemonic.mnemonicField == "albus.dumbledor"
+
+
+def test_that__MnemonicParser_parse__recognizes_instructions():
+    # prepare and execute
+    mnemonic = MnemonicParser(makeConfiguration()).parse("harry.potter")
+
+    # verify
+    assert type(mnemonic) is InstructionInvocation
+    assert mnemonic.name == "harry"
+    assert mnemonic.suffix == "potter"
+    assert mnemonic.mnemonicField == "harry.potter"
+
+
+def test_that__MnemonicParser_parse__recognizes_instructions_without_suffixes():
+    # prepare and execute
+    mnemonic = MnemonicParser(makeConfiguration()).parse("harry")
+
+    # verify
+    assert type(mnemonic) is InstructionInvocation
+    assert mnemonic.name == "harry"
+    assert mnemonic.suffix == ""
+    assert mnemonic.mnemonicField == "harry"
+
+
+def test_that__MnemonicParser_parse__recognizes_instructions_case_insensitive():
+    # prepare and execute
+    mnemonic = MnemonicParser(makeConfiguration()).parse("HarrY.PotteR")
+
+    # verify
+    assert type(mnemonic) is InstructionInvocation
+    assert mnemonic.name == "harry"
+    assert mnemonic.suffix == "potter"
+    assert mnemonic.mnemonicField == "harry.potter"

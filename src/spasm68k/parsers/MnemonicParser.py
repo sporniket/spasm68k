@@ -20,13 +20,39 @@ If not, see <https://www.gnu.org/licenses/>. 
 ---
 """
 
-from spasm68k.models.mnemonics import DirectiveInvocation
+from dataclasses import dataclass
+from spasm68k.models.mnemonics import DirectiveInvocation, InstructionInvocation
+
+
+class RegistryOfMacros:
+    def isRegistered(self, name: str) -> bool:
+        return False
+
+
+@dataclass
+class MnemonicParserConfiguration:
+    directives: list[str]
+    instructions: list[str]
+    macroRegistry: RegistryOfMacros
 
 
 class MnemonicParser:
+    def __init__(self, configuration: MnemonicParserConfiguration):
+        self._configuration = (
+            configuration
+            if configuration is not None
+            else MnemonicParserConfiguration([], [], RegistryOfMacros())
+        )
 
     def parse(self, mnemonicField: str):
         parts = mnemonicField.lower().split(".", 1)
         if len(parts) < 2:
             parts += [""]
-        return DirectiveInvocation(*parts)
+        if self.isDirective(parts):
+            return DirectiveInvocation(*parts)
+        elif parts[0] in self._configuration.instructions:
+            return InstructionInvocation(*parts)
+        return None
+
+    def isDirective(self, parts):
+        return parts[0] in self._configuration.directives

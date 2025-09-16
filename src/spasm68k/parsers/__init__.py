@@ -20,6 +20,10 @@ If not, see <https://www.gnu.org/licenses/>. 
 ---
 """
 
-from .MnemonicParser import MnemonicParser
+from .MnemonicParser import (
+    MnemonicParser,
+    MnemonicParserConfiguration,
+    RegistryOfMacros,
+)
 
-__all__ = ["MnemonicParser"]
+__all__ = ["MnemonicParser", "MnemonicParserConfiguration", "RegistryOfMacros"]
