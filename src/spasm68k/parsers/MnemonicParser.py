@@ -61,20 +61,20 @@ class MnemonicParser:
         parts = mnemonicField.lower().split(".", 1)
         if len(parts) < 2:
             parts += [""]
-        if self.isDirective(parts):
+        if self.__isDirective(parts):
             return DirectiveInvocation(*parts)
-        elif self.isInstruction(parts):
+        elif self.__isInstruction(parts):
             return InstructionInvocation(*parts)
-        elif self.isRegisteredMacro(mnemonicField):
+        elif self.__isRegisteredMacro(mnemonicField):
             return MacroInvocation(mnemonicField)
         else:
             return UnknownInvocation(mnemonicField)
 
-    def isRegisteredMacro(self, mnemonicField):
+    def __isRegisteredMacro(self, mnemonicField):
         return self._configuration.macroRegistry.isRegistered(mnemonicField)
 
-    def isInstruction(self, parts):
+    def __isInstruction(self, parts):
         return parts[0] in self._configuration.instructions
 
-    def isDirective(self, parts):
+    def __isDirective(self, parts):
         return parts[0] in self._configuration.directives

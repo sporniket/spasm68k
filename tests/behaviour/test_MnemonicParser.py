@@ -44,7 +44,7 @@ def makeConfiguration(registry: RegistryOfMacros = None):
     )
 
 
-def test_that__MnemonicParser_parse__WILL_recognize_directives():
+def test_that_it_WILL_recognize_directives():
     # prepare and execute
     mnemonic = MnemonicParser(makeConfiguration()).parse("albus.dumbledor")
 
@@ -55,7 +55,7 @@ def test_that__MnemonicParser_parse__WILL_recognize_directives():
     assert mnemonic.mnemonicField == "albus.dumbledor"
 
 
-def test_that__MnemonicParser_parse__WILL_recognize_directives_without_suffixes():
+def test_that_it_WILL_recognize_directives_without_suffixes():
     # prepare and execute
     mnemonic = MnemonicParser(makeConfiguration()).parse("albus")
 
@@ -66,7 +66,7 @@ def test_that__MnemonicParser_parse__WILL_recognize_directives_without_suffixes(
     assert mnemonic.mnemonicField == "albus"
 
 
-def test_that__MnemonicParser_parse__WILL_recognize_directives_case_insensitive():
+def test_that_it_WILL_recognize_directives_case_insensitive():
     # prepare and execute
     mnemonic = MnemonicParser(makeConfiguration()).parse("aLbUs.DuMbLeDoR")
 
@@ -77,7 +77,7 @@ def test_that__MnemonicParser_parse__WILL_recognize_directives_case_insensitive(
     assert mnemonic.mnemonicField == "albus.dumbledor"
 
 
-def test_that__MnemonicParser_parse__WILL_recognize_instructions():
+def test_that_it_WILL_recognize_instructions():
     # prepare and execute
     mnemonic = MnemonicParser(makeConfiguration()).parse("harry.potter")
 
@@ -88,7 +88,7 @@ def test_that__MnemonicParser_parse__WILL_recognize_instructions():
     assert mnemonic.mnemonicField == "harry.potter"
 
 
-def test_that__MnemonicParser_parse__WILL_recognize_instructions_without_suffixes():
+def test_that_it_WILL_recognize_instructions_without_suffixes():
     # prepare and execute
     mnemonic = MnemonicParser(makeConfiguration()).parse("harry")
 
@@ -99,7 +99,7 @@ def test_that__MnemonicParser_parse__WILL_recognize_instructions_without_suffixe
     assert mnemonic.mnemonicField == "harry"
 
 
-def test_that__MnemonicParser_parse__WILL_recognize_instructions_case_insensitive():
+def test_that_it_WILL_recognize_instructions_case_insensitive():
     # prepare and execute
     mnemonic = MnemonicParser(makeConfiguration()).parse("HarrY.PotteR")
 
@@ -110,7 +110,7 @@ def test_that__MnemonicParser_parse__WILL_recognize_instructions_case_insensitiv
     assert mnemonic.mnemonicField == "harry.potter"
 
 
-def test_that__MnemonicParser_parse__WILL_recognize_registered_macros():
+def test_that_it_WILL_recognize_registered_macros():
     # prepare
     registry = RegistryOfMacros()
     parser = MnemonicParser(makeConfiguration(registry))
@@ -127,7 +127,7 @@ def test_that__MnemonicParser_parse__WILL_recognize_registered_macros():
     assert mnemonic.mnemonicField == "callMeToTheMoon"
 
 
-def test_that__MnemonicParser_parse__WILL_recognize_registered_macros_case_sensitive():
+def test_that_it_WILL_recognize_registered_macros_case_sensitive():
     # prepare
     registry = RegistryOfMacros()
     parser = MnemonicParser(makeConfiguration(registry))
@@ -144,7 +144,7 @@ def test_that__MnemonicParser_parse__WILL_recognize_registered_macros_case_sensi
     assert mnemonic.mnemonicField == "CallMeToTheMoon"
 
 
-def test_that__MnemonicParser_parse__MAY_recognize_nothing():
+def test_that_it_MAY_recognize_nothing():
     # prepare and execute
     mnemonic = MnemonicParser(makeConfiguration()).parse("callMeToTheMoon")
 
@@ -154,7 +154,7 @@ def test_that__MnemonicParser_parse__MAY_recognize_nothing():
     assert mnemonic.mnemonicField == "callMeToTheMoon"
 
 
-def test_that__MnemonicParser_parse__WONT_override_directive():
+def test_that_it_WONT_override_directive():
     # prepare
     registry = RegistryOfMacros()
     configuration = MnemonicParserConfiguration(["me"], ["me"], registry)
@@ -170,7 +170,7 @@ def test_that__MnemonicParser_parse__WONT_override_directive():
     assert type(mnemonic) is DirectiveInvocation
 
 
-def test_that__MnemonicParser_parse__WONT_override_instruction_with_registered_macro():
+def test_that_it_WONT_override_instruction_with_registered_macro():
     # prepare
     registry = RegistryOfMacros()
     configuration = MnemonicParserConfiguration(["you"], ["me"], registry)
