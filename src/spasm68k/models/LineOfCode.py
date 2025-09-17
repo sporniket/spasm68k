@@ -20,7 +20,23 @@ If not, see <https://www.gnu.org/licenses/>. 
 ---
 """
 
-from .LineOfCode import LineOfCode, LineOfCodeLoader
-from .Segment import Segment
+from dataclasses import dataclass
 
-__all__ = ["LineOfCode", "LineOfCodeLoader", "Segment"]
+
+@dataclass
+class LineOfCode:
+    sourceFile: (
+        str  # the path of the source file, usually relative to the working directory
+    )
+    lineNumber: int  # 0-based
+    content: str  # the actual content, no stripping of leading/trailing whitespaces
+
+
+class LineOfCodeLoader:
+    def read(self, filename: str) -> list[LineOfCode]:
+        with open(filename) as src:
+            lines = src.readlines()
+            return list(
+                map(lambda e: LineOfCode(filename, e[0], e[1]), enumerate(lines))
+            )
+        return []
