@@ -25,5 +25,11 @@ from .MnemonicParser import (
     MnemonicParserConfiguration,
     RegistryOfMacros,
 )
+from .OperandSplitter import OperandSplitter
 
-__all__ = ["MnemonicParser", "MnemonicParserConfiguration", "RegistryOfMacros"]
+__all__ = [
+    "MnemonicParser",
+    "MnemonicParserConfiguration",
+    "OperandSplitter",
+    "RegistryOfMacros",
+]

@@ -20,6 +20,23 @@ If not, see <https://www.gnu.org/licenses/>. 
 ---
 """
 
-from .Segment import Segment
+from spasm68k.models import Segment
 
-__all__ = ["Segment"]
+
+def test_that_it_MUST_be_valid():
+    assert not Segment(-6, -1)
+    assert not Segment(-1, 6)
+    assert not Segment(6, 1)
+    assert not Segment(2, 2)
+    assert Segment(1, 6)
+
+
+def test_that_it_WILL_have_a_length():
+    assert len(Segment(1, 6)) == 5
+
+
+def test_that_it_WILL_have_a_zero_length_when_invalid():
+    assert len(Segment(-6, -1)) == 0
+    assert len(Segment(-1, 6)) == 0
+    assert len(Segment(6, 1)) == 0
+    assert len(Segment(2, 2)) == 0

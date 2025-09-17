@@ -20,6 +20,20 @@ If not, see <https://www.gnu.org/licenses/>. 
 ---
 """
 
-from .Segment import Segment
+from dataclasses import dataclass
 
-__all__ = ["Segment"]
+
+@dataclass
+class Segment:
+    start: int  # starting position (included) >= 0
+    end: int  # ending position (excluded) > start
+
+    @property
+    def valid(self) -> bool:
+        return self.start > 0 and self.end > self.start
+
+    def __bool__(self) -> bool:
+        return self.valid
+
+    def __len__(self) -> int:
+        return self.end - self.start if self.valid else 0
