@@ -20,8 +20,12 @@ If not, see <https://www.gnu.org/licenses/>. 
 ---
 """
 
-from .LineOfCode import LineOfCode, LineOfCodeLoader
+from dataclasses import dataclass
+from .LineOfCode import LineOfCode
 from .Segment import Segment
-from .Origin import Origin
 
-__all__ = ["LineOfCode", "LineOfCodeLoader", "Origin", "Segment"]
+
+@dataclass
+class Origin:
+    segment: Segment
+    lineOfCode: LineOfCode

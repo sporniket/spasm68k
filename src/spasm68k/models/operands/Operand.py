@@ -20,8 +20,21 @@ If not, see <https://www.gnu.org/licenses/>. 
 ---
 """
 
-from .LineOfCode import LineOfCode, LineOfCodeLoader
-from .Segment import Segment
-from .Origin import Origin
+from dataclasses import dataclass
+from ..Origin import Origin
 
-__all__ = ["LineOfCode", "LineOfCodeLoader", "Origin", "Segment"]
+
+@dataclass(frozen=True)
+class Operand:
+    origin: Origin
+
+
+@dataclass(frozen=True)
+class OperandUnsupported(Operand):
+    pass
+
+
+@dataclass(frozen=True)
+class OperandRegister(Operand):
+    value: int
+    alias: str = None

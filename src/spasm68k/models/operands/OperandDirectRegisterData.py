@@ -20,8 +20,21 @@ If not, see <https://www.gnu.org/licenses/>. 
 ---
 """
 
-from .LineOfCode import LineOfCode, LineOfCodeLoader
-from .Segment import Segment
-from .Origin import Origin
+from dataclasses import dataclass
+from ..Origin import Origin
+from .Operand import OperandRegister
 
-__all__ = ["LineOfCode", "LineOfCodeLoader", "Origin", "Segment"]
+
+@dataclass(frozen=True)
+class OperandDirectRegisterData(OperandRegister):
+    pass
+
+
+@dataclass(frozen=True)
+class OperandDirectRegisterAddress(OperandRegister):
+    pass
+
+
+@dataclass(frozen=True)
+class OperandIndirectRegisterAddress(OperandRegister):
+    pass

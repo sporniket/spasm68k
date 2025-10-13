@@ -20,8 +20,17 @@ If not, see <https://www.gnu.org/licenses/>. 
 ---
 """
 
-from .LineOfCode import LineOfCode, LineOfCodeLoader
-from .Segment import Segment
-from .Origin import Origin
+from .Operand import Operand, OperandUnsupported
+from .OperandDirectRegisterData import (
+    OperandDirectRegisterData,
+    OperandDirectRegisterAddress,
+    OperandIndirectRegisterAddress,
+)
 
-__all__ = ["LineOfCode", "LineOfCodeLoader", "Origin", "Segment"]
+__all__ = [
+    "Operand",
+    "OperandDirectRegisterData",
+    "OperandDirectRegisterAddress",
+    "OperandIndirectRegisterAddress",
+    "OperandUnsupported",
+]
