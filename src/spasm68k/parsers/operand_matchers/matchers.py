@@ -22,6 +22,7 @@ If not, see <https://www.gnu.org/licenses/>. 
 
 import re
 
+from class_collector import itemOf
 from spasm68k.models import Origin
 from spasm68k.models.operands import (
     Operand,
@@ -34,6 +35,7 @@ from .base import MatcherUsingPattern
 ALIAS_STACK_POINTER = "sp"
 
 
+@itemOf("spasm68k.parsers.operand_matchers")
 class MatcherOfDirectRegisterData(MatcherUsingPattern):
     __matcher = re.compile("d([0-7])", re.IGNORECASE)
 
@@ -48,6 +50,7 @@ class MatcherOfDirectRegisterData(MatcherUsingPattern):
         return OperandDirectRegisterData(origin, int(match.group(1)))
 
 
+@itemOf("spasm68k.parsers.operand_matchers")
 class MatcherOfDirectStackPointer(MatcherUsingPattern):
     __matcher = re.compile("sp", re.IGNORECASE)
 
@@ -62,6 +65,7 @@ class MatcherOfDirectStackPointer(MatcherUsingPattern):
         return OperandDirectRegisterAddress(origin, 7, ALIAS_STACK_POINTER)
 
 
+@itemOf("spasm68k.parsers.operand_matchers")
 class MatcherOfDirectRegisterAddress(MatcherUsingPattern):
     __matcher = re.compile("a([0-7])", re.IGNORECASE)
 
@@ -76,6 +80,7 @@ class MatcherOfDirectRegisterAddress(MatcherUsingPattern):
         return OperandDirectRegisterAddress(origin, int(match.group(1)))
 
 
+@itemOf("spasm68k.parsers.operand_matchers")
 class MatcherOfIndirectRegisterAddress(MatcherUsingPattern):
     __matcher = re.compile("[(]a([0-7])[)]", re.IGNORECASE)
 
@@ -90,6 +95,7 @@ class MatcherOfIndirectRegisterAddress(MatcherUsingPattern):
         return OperandIndirectRegisterAddress(origin, int(match.group(1)))
 
 
+@itemOf("spasm68k.parsers.operand_matchers")
 class MatcherOfIndirectStackPointer(MatcherUsingPattern):
     __matcher = re.compile("[(]sp[)]", re.IGNORECASE)
 

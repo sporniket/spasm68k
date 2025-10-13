@@ -22,6 +22,7 @@ If not, see <https://www.gnu.org/licenses/>. 
 
 import re
 
+from class_collector import itemsOf
 from spasm68k.models import LineOfCode, Segment, Origin
 from spasm68k.models.operands import (
     Operand,
@@ -38,13 +39,7 @@ from .operand_matchers import (
 
 
 class OperandParser:
-    __matchers = [
-        MatcherOfDirectRegisterData(),
-        MatcherOfDirectRegisterAddress(),
-        MatcherOfDirectStackPointer(),
-        MatcherOfIndirectRegisterAddress(),
-        MatcherOfIndirectStackPointer(),
-    ]
+    __matchers = itemsOf("spasm68k.parsers.operand_matchers").values()
 
     def parse(self, segment: Segment, lineOfCode: LineOfCode) -> Operand:
         origin = Origin(segment, lineOfCode)
