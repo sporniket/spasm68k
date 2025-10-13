@@ -20,8 +20,8 @@ If not, see <https://www.gnu.org/licenses/>. 
 ---
 """
 
-from .Operand import Operand, OperandUnsupported
-from .OperandDirectRegisterData import (
+from .base import Operand, OperandUnsupported
+from .operands import (
     OperandDirectRegisterData,
     OperandDirectRegisterAddress,
     OperandIndirectRegisterAddress,

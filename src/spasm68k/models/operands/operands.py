@@ -21,8 +21,7 @@ If not, see <https://www.gnu.org/licenses/>. 
 """
 
 from dataclasses import dataclass
-from ..Origin import Origin
-from .Operand import OperandRegister
+from .base import OperandRegister
 
 
 @dataclass(frozen=True)
