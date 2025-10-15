@@ -25,6 +25,8 @@ from .operands import (
     OperandDirectRegisterData,
     OperandDirectRegisterAddress,
     OperandIndirectRegisterAddress,
+    OperandIndirectRegisterAddressWithPostIncrement,
+    OperandIndirectRegisterAddressWithPreDecrement,
 )
 
 __all__ = [
@@ -32,5 +34,7 @@ __all__ = [
     "OperandDirectRegisterData",
     "OperandDirectRegisterAddress",
     "OperandIndirectRegisterAddress",
+    "OperandIndirectRegisterAddressWithPostIncrement",
+    "OperandIndirectRegisterAddressWithPreDecrement",
     "OperandUnsupported",
 ]

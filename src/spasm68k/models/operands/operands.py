@@ -37,3 +37,13 @@ class OperandDirectRegisterAddress(OperandRegister):
 @dataclass(frozen=True)
 class OperandIndirectRegisterAddress(OperandRegister):
     pass
+
+
+@dataclass(frozen=True)
+class OperandIndirectRegisterAddressWithPostIncrement(OperandRegister):
+    pass
+
+
+@dataclass(frozen=True)
+class OperandIndirectRegisterAddressWithPreDecrement(OperandRegister):
+    pass

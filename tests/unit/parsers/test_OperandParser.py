@@ -27,6 +27,8 @@ from spasm68k.models.operands import (
     OperandDirectRegisterData,
     OperandDirectRegisterAddress,
     OperandIndirectRegisterAddress,
+    OperandIndirectRegisterAddressWithPostIncrement,
+    OperandIndirectRegisterAddressWithPreDecrement,
     OperandUnsupported,
 )
 
@@ -75,13 +77,15 @@ def test_OperandParser_can_parse_direct_register_address_operand():
 
 
 def test_OperandParser_can_parse_direct_register_address_sp_operand():
-    source, oseg = setupOperandToParse("sp")
-    operand = parser.parse(oseg, source)
-    assert isinstance(operand, OperandDirectRegisterAddress)
-    assert operand.value == 7
-    assert operand.alias == "sp"
-    assert operand.origin.segment == oseg
-    assert operand.origin.lineOfCode == source
+    for s in ["s", "S"]:
+        for p in ["p", "P"]:
+            source, oseg = setupOperandToParse(f"{s}{p}")
+            operand = parser.parse(oseg, source)
+            assert isinstance(operand, OperandDirectRegisterAddress)
+            assert operand.value == 7
+            assert operand.alias == "sp"
+            assert operand.origin.segment == oseg
+            assert operand.origin.lineOfCode == source
 
 
 def test_OperandParser_can_parse_indirect_register_address_operand():
@@ -97,13 +101,63 @@ def test_OperandParser_can_parse_indirect_register_address_operand():
 
 
 def test_OperandParser_can_parse_indirect_register_address_sp_operand():
-    source, oseg = setupOperandToParse("(sp)")
-    operand = parser.parse(oseg, source)
-    assert isinstance(operand, OperandIndirectRegisterAddress)
-    assert operand.value == 7
-    assert operand.alias == "sp"
-    assert operand.origin.segment == oseg
-    assert operand.origin.lineOfCode == source
+    for s in ["s", "S"]:
+        for p in ["p", "P"]:
+            source, oseg = setupOperandToParse(f"({s}{p})")
+            operand = parser.parse(oseg, source)
+            assert isinstance(operand, OperandIndirectRegisterAddress)
+            assert operand.value == 7
+            assert operand.alias == "sp"
+            assert operand.origin.segment == oseg
+            assert operand.origin.lineOfCode == source
+
+
+def test_OperandParser_can_parse_indirect_register_address_with_postincrement_operand():
+    for d in ["a", "A"]:
+        for n in range(8):
+            source, oseg = setupOperandToParse(f"({d}{n})+")
+            operand = parser.parse(oseg, source)
+            assert isinstance(operand, OperandIndirectRegisterAddressWithPostIncrement)
+            assert operand.value == n
+            assert operand.alias == None
+            assert operand.origin.segment == oseg
+            assert operand.origin.lineOfCode == source
+
+
+def test_OperandParser_can_parse_indirect_register_address_sp_with_postincrement_operand():
+    for s in ["s", "S"]:
+        for p in ["p", "P"]:
+            source, oseg = setupOperandToParse(f"({s}{p})+")
+            operand = parser.parse(oseg, source)
+            assert isinstance(operand, OperandIndirectRegisterAddressWithPostIncrement)
+            assert operand.value == 7
+            assert operand.alias == "sp"
+            assert operand.origin.segment == oseg
+            assert operand.origin.lineOfCode == source
+
+
+def test_OperandParser_can_parse_indirect_register_address_with_predecrement_operand():
+    for d in ["a", "A"]:
+        for n in range(8):
+            source, oseg = setupOperandToParse(f"-({d}{n})")
+            operand = parser.parse(oseg, source)
+            assert isinstance(operand, OperandIndirectRegisterAddressWithPreDecrement)
+            assert operand.value == n
+            assert operand.alias == None
+            assert operand.origin.segment == oseg
+            assert operand.origin.lineOfCode == source
+
+
+def test_OperandParser_can_parse_indirect_register_address_sp_with_predecrement_operand():
+    for s in ["s", "S"]:
+        for p in ["p", "P"]:
+            source, oseg = setupOperandToParse(f"-({s}{p})")
+            operand = parser.parse(oseg, source)
+            assert isinstance(operand, OperandIndirectRegisterAddressWithPreDecrement)
+            assert operand.value == 7
+            assert operand.alias == "sp"
+            assert operand.origin.segment == oseg
+            assert operand.origin.lineOfCode == source
 
 
 def test_OperandParser_returns_an_unsupported_operand_when_it_cannot_recognize_anything():

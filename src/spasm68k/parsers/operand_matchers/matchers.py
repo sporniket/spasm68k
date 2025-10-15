@@ -29,6 +29,8 @@ from spasm68k.models.operands import (
     OperandDirectRegisterData,
     OperandDirectRegisterAddress,
     OperandIndirectRegisterAddress,
+    OperandIndirectRegisterAddressWithPostIncrement,
+    OperandIndirectRegisterAddressWithPreDecrement,
 )
 from .base import MatcherUsingPattern
 
@@ -108,3 +110,71 @@ class MatcherOfIndirectStackPointer(MatcherUsingPattern):
 
     def _buildOperand(self, match: any, origin: Origin) -> Operand:
         return OperandIndirectRegisterAddress(origin, 7, ALIAS_STACK_POINTER)
+
+
+@itemOf("spasm68k.parsers.operand_matchers")
+class MatcherOfIndirectRegisterAddressWithPostIncrement(MatcherUsingPattern):
+    __matcher = re.compile("[(]a([0-7])[)][+]", re.IGNORECASE)
+
+    @property
+    def pattern(self) -> re.Pattern:
+        return self.__matcher
+
+    def isMatchable(self, origin: Origin) -> bool:
+        return True if len(origin.segment) == 5 else False
+
+    def _buildOperand(self, match: any, origin: Origin) -> Operand:
+        return OperandIndirectRegisterAddressWithPostIncrement(
+            origin, int(match.group(1))
+        )
+
+
+@itemOf("spasm68k.parsers.operand_matchers")
+class MatcherOfIndirectStackPointerWithPostIncrement(MatcherUsingPattern):
+    __matcher = re.compile("[(]sp[)][+]", re.IGNORECASE)
+
+    @property
+    def pattern(self) -> re.Pattern:
+        return self.__matcher
+
+    def isMatchable(self, origin: Origin) -> bool:
+        return True if len(origin.segment) == 5 else False
+
+    def _buildOperand(self, match: any, origin: Origin) -> Operand:
+        return OperandIndirectRegisterAddressWithPostIncrement(
+            origin, 7, ALIAS_STACK_POINTER
+        )
+
+
+@itemOf("spasm68k.parsers.operand_matchers")
+class MatcherOfIndirectRegisterAddressWithPredecrement(MatcherUsingPattern):
+    __matcher = re.compile("[-][(]a([0-7])[)]", re.IGNORECASE)
+
+    @property
+    def pattern(self) -> re.Pattern:
+        return self.__matcher
+
+    def isMatchable(self, origin: Origin) -> bool:
+        return True if len(origin.segment) == 5 else False
+
+    def _buildOperand(self, match: any, origin: Origin) -> Operand:
+        return OperandIndirectRegisterAddressWithPreDecrement(
+            origin, int(match.group(1))
+        )
+
+
+@itemOf("spasm68k.parsers.operand_matchers")
+class MatcherOfIndirectStackPointerWithPrederement(MatcherUsingPattern):
+    __matcher = re.compile("[-][(]sp[)]", re.IGNORECASE)
+
+    @property
+    def pattern(self) -> re.Pattern:
+        return self.__matcher
+
+    def isMatchable(self, origin: Origin) -> bool:
+        return True if len(origin.segment) == 5 else False
+
+    def _buildOperand(self, match: any, origin: Origin) -> Operand:
+        return OperandIndirectRegisterAddressWithPreDecrement(
+            origin, 7, ALIAS_STACK_POINTER
+        )
