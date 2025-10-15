@@ -73,11 +73,12 @@ def test_OperandParser_can_parse_direct_register_address_operand():
             assert operand.origin.segment == oseg
             assert operand.origin.lineOfCode == source
 
-    # match alias "sp"
+
+def test_OperandParser_can_parse_direct_register_address_sp_operand():
     source, oseg = setupOperandToParse("sp")
     operand = parser.parse(oseg, source)
     assert isinstance(operand, OperandDirectRegisterAddress)
-    assert operand.value == n
+    assert operand.value == 7
     assert operand.alias == "sp"
     assert operand.origin.segment == oseg
     assert operand.origin.lineOfCode == source
@@ -94,11 +95,12 @@ def test_OperandParser_can_parse_indirect_register_address_operand():
             assert operand.origin.segment == oseg
             assert operand.origin.lineOfCode == source
 
-    # match alias "sp"
+
+def test_OperandParser_can_parse_indirect_register_address_sp_operand():
     source, oseg = setupOperandToParse("(sp)")
     operand = parser.parse(oseg, source)
     assert isinstance(operand, OperandIndirectRegisterAddress)
-    assert operand.value == n
+    assert operand.value == 7
     assert operand.alias == "sp"
     assert operand.origin.segment == oseg
     assert operand.origin.lineOfCode == source
