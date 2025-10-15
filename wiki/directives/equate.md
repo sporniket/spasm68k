@@ -1,6 +1,8 @@
 # Equate
 
-**Requires** a label that is a valid [identifier](../identifier.md).
+**Requires :** 
+
+* a label that is a valid [identifier](../identifier.md).
 
 An equate directive instructs the compiler to map the label to the given litteral value.
 
