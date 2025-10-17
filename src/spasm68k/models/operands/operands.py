@@ -21,6 +21,7 @@ If not, see <https://www.gnu.org/licenses/>. 
 """
 
 from dataclasses import dataclass
+from spasm68k.models import Segment
 from .base import OperandRegister
 
 
@@ -47,3 +48,8 @@ class OperandIndirectRegisterAddressWithPostIncrement(OperandRegister):
 @dataclass(frozen=True)
 class OperandIndirectRegisterAddressWithPreDecrement(OperandRegister):
     pass
+
+
+@dataclass(frozen=True)
+class OperandIndirectRegisterAddressWithDisplacement(OperandRegister):
+    displacement: Segment = None

@@ -29,6 +29,7 @@ from spasm68k.models.operands import (
     OperandIndirectRegisterAddress,
     OperandIndirectRegisterAddressWithPostIncrement,
     OperandIndirectRegisterAddressWithPreDecrement,
+    OperandIndirectRegisterAddressWithDisplacement,
     OperandUnsupported,
 )
 
@@ -167,3 +168,93 @@ def test_OperandParser_returns_an_unsupported_operand_when_it_cannot_recognize_a
         assert isinstance(operand, OperandUnsupported)
         assert operand.origin.segment == oseg
         assert operand.origin.lineOfCode == source
+
+
+# generate displacement
+def generateDisplacementStrings_generic(
+    span: int, numberFormat: str, prefixes: list[str]
+) -> list[str]:
+    baseValue = format(int(random.random() * span), numberFormat)
+    values = [baseValue, baseValue + "_" + baseValue]
+    result = []
+    for v in values:
+        result += [p + v for p in prefixes]
+    return result
+
+
+def generateDisplacementStrings_binaryValues() -> list[str]:
+    return generateDisplacementStrings_generic(65536, "b", ["%", "0b"])
+
+
+def generateDisplacementStrings_octalValues() -> list[str]:
+    return generateDisplacementStrings_generic(65536, "o", ["0", "0o"])
+
+
+def generateDisplacementStrings_decimalValues() -> list[str]:
+    return generateDisplacementStrings_generic(65536, "d", ["", "0d", "0d0"])
+
+
+def generateDisplacementStrings_hexadecimalValues() -> list[str]:
+    return generateDisplacementStrings_generic(65536, "x", ["$", "0x"])
+
+
+def generateDisplacementStrings_validSymbols() -> list[str]:
+    return ["simple", "with_underscores", "a1pha_num3r1c"]
+
+
+def generateDisplacementStrings() -> list[str]:
+    result = []
+    for g in [
+        generateDisplacementStrings_binaryValues,
+        generateDisplacementStrings_octalValues,
+        generateDisplacementStrings_decimalValues,
+        generateDisplacementStrings_hexadecimalValues,
+        generateDisplacementStrings_validSymbols,
+    ]:
+        result += g()
+    return result
+
+
+def test_OperandParser_can_parse_indirect_register_address_with_displacement():
+    for displ in generateDisplacementStrings():
+        for d in ["a", "A"]:
+            for n in range(8):
+                for variant in [f"{displ}({d}{n})", f"({displ},{d}{n})"]:
+                    source, oseg = setupOperandToParse(variant)
+                    operand = parser.parse(oseg, source)
+                    assert isinstance(
+                        operand, OperandIndirectRegisterAddressWithDisplacement
+                    )
+                    assert operand.value == n
+                    assert operand.alias == None
+                    assert operand.origin.segment == oseg
+                    assert operand.origin.lineOfCode == source
+                    assert isinstance(operand.displacement, Segment)
+                    if variant[0] == "(":
+                        assert operand.displacement.start == 1
+                        assert operand.displacement.end == 1 + len(displ)
+                    else:
+                        assert operand.displacement.start == 0
+                        assert operand.displacement.end == len(displ)
+
+
+def test_OperandParser_can_parse_indirect_register_address_sp_with_displacement():
+    for displ in generateDisplacementStrings():
+        for s in ["s", "S"]:
+            for p in ["p", "P"]:
+                for variant in [f"{displ}({s}{p})", f"({displ},{s}{p})"]:
+                    source, oseg = setupOperandToParse(variant)
+                    operand = parser.parse(oseg, source)
+                    assert isinstance(
+                        operand, OperandIndirectRegisterAddressWithDisplacement
+                    )
+                    assert operand.value == 7
+                    assert operand.alias == "sp"
+                    assert operand.origin.segment == oseg
+                    assert operand.origin.lineOfCode == source
+                    if variant[0] == "(":
+                        assert operand.displacement.start == 1
+                        assert operand.displacement.end == 1 + len(displ)
+                    else:
+                        assert operand.displacement.start == 0
+                        assert operand.displacement.end == len(displ)
