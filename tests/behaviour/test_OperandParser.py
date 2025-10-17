@@ -54,7 +54,16 @@ def test_setupOperandToParse():
     assert line.content == "  opcode my operand some comments"
 
 
-def test_OperandParser_can_parse_direct_register_data_operand():
+def test_that_it_WILL_returns_an_unsupported_operand_when_it_cannot_recognize_anything():
+    for op in ["whatever", "d8"]:
+        source, oseg = setupOperandToParse(op)
+        operand = parser.parse(oseg, source)
+        assert isinstance(operand, OperandUnsupported)
+        assert operand.origin.segment == oseg
+        assert operand.origin.lineOfCode == source
+
+
+def test_that_it_WILL_parse_direct_register_data_operand():
     for d in ["d", "D"]:
         for n in range(8):
             source, oseg = setupOperandToParse(f"{d}{n}")
@@ -65,7 +74,7 @@ def test_OperandParser_can_parse_direct_register_data_operand():
             assert operand.origin.lineOfCode == source
 
 
-def test_OperandParser_can_parse_direct_register_address_operand():
+def test_that_it_WILL_parse_direct_register_address_operand():
     for d in ["a", "A"]:
         for n in range(8):
             source, oseg = setupOperandToParse(f"{d}{n}")
@@ -77,7 +86,7 @@ def test_OperandParser_can_parse_direct_register_address_operand():
             assert operand.origin.lineOfCode == source
 
 
-def test_OperandParser_can_parse_direct_register_address_sp_operand():
+def test_that_it_WILL_parse_direct_register_address_sp_operand():
     for s in ["s", "S"]:
         for p in ["p", "P"]:
             source, oseg = setupOperandToParse(f"{s}{p}")
@@ -89,7 +98,7 @@ def test_OperandParser_can_parse_direct_register_address_sp_operand():
             assert operand.origin.lineOfCode == source
 
 
-def test_OperandParser_can_parse_indirect_register_address_operand():
+def test_that_it_WILL_parse_indirect_register_address_operand():
     for d in ["a", "A"]:
         for n in range(8):
             source, oseg = setupOperandToParse(f"({d}{n})")
@@ -101,7 +110,7 @@ def test_OperandParser_can_parse_indirect_register_address_operand():
             assert operand.origin.lineOfCode == source
 
 
-def test_OperandParser_can_parse_indirect_register_address_sp_operand():
+def test_that_it_WILL_parse_indirect_register_address_sp_operand():
     for s in ["s", "S"]:
         for p in ["p", "P"]:
             source, oseg = setupOperandToParse(f"({s}{p})")
@@ -113,7 +122,7 @@ def test_OperandParser_can_parse_indirect_register_address_sp_operand():
             assert operand.origin.lineOfCode == source
 
 
-def test_OperandParser_can_parse_indirect_register_address_with_postincrement_operand():
+def test_that_it_WILL_parse_indirect_register_address_with_postincrement_operand():
     for d in ["a", "A"]:
         for n in range(8):
             source, oseg = setupOperandToParse(f"({d}{n})+")
@@ -125,7 +134,7 @@ def test_OperandParser_can_parse_indirect_register_address_with_postincrement_op
             assert operand.origin.lineOfCode == source
 
 
-def test_OperandParser_can_parse_indirect_register_address_sp_with_postincrement_operand():
+def test_that_it_WILL_parse_indirect_register_address_sp_with_postincrement_operand():
     for s in ["s", "S"]:
         for p in ["p", "P"]:
             source, oseg = setupOperandToParse(f"({s}{p})+")
@@ -137,7 +146,7 @@ def test_OperandParser_can_parse_indirect_register_address_sp_with_postincrement
             assert operand.origin.lineOfCode == source
 
 
-def test_OperandParser_can_parse_indirect_register_address_with_predecrement_operand():
+def test_that_it_WILL_parse_indirect_register_address_with_predecrement_operand():
     for d in ["a", "A"]:
         for n in range(8):
             source, oseg = setupOperandToParse(f"-({d}{n})")
@@ -149,7 +158,7 @@ def test_OperandParser_can_parse_indirect_register_address_with_predecrement_ope
             assert operand.origin.lineOfCode == source
 
 
-def test_OperandParser_can_parse_indirect_register_address_sp_with_predecrement_operand():
+def test_that_it_WILL_parse_indirect_register_address_sp_with_predecrement_operand():
     for s in ["s", "S"]:
         for p in ["p", "P"]:
             source, oseg = setupOperandToParse(f"-({s}{p})")
@@ -159,15 +168,6 @@ def test_OperandParser_can_parse_indirect_register_address_sp_with_predecrement_
             assert operand.alias == "sp"
             assert operand.origin.segment == oseg
             assert operand.origin.lineOfCode == source
-
-
-def test_OperandParser_returns_an_unsupported_operand_when_it_cannot_recognize_anything():
-    for op in ["whatever", "d8"]:
-        source, oseg = setupOperandToParse(op)
-        operand = parser.parse(oseg, source)
-        assert isinstance(operand, OperandUnsupported)
-        assert operand.origin.segment == oseg
-        assert operand.origin.lineOfCode == source
 
 
 # generate displacement
@@ -215,7 +215,7 @@ def generateDisplacementStrings() -> list[str]:
     return result
 
 
-def test_OperandParser_can_parse_indirect_register_address_with_displacement():
+def test_that_it_WILL_parse_indirect_register_address_with_displacement():
     for displ in generateDisplacementStrings():
         for d in ["a", "A"]:
             for n in range(8):
@@ -238,7 +238,7 @@ def test_OperandParser_can_parse_indirect_register_address_with_displacement():
                         assert operand.displacement.end == len(displ)
 
 
-def test_OperandParser_can_parse_indirect_register_address_sp_with_displacement():
+def test_that_it_WILL_parse_indirect_register_address_sp_with_displacement():
     for displ in generateDisplacementStrings():
         for s in ["s", "S"]:
             for p in ["p", "P"]:
